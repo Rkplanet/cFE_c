@@ -1244,94 +1244,94 @@ CFE_Status_t CFE_ES_GetTaskInfo(CFE_ES_TaskInfo_t *TaskInfo, CFE_ES_TaskId_t Tas
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-CFE_Status_t CFE_ES_CreateChildTask(CFE_ES_TaskId_t *TaskIdPtr, const char *TaskName,
-                                    CFE_ES_ChildTaskMainFuncPtr_t FunctionPtr, CFE_ES_StackPointer_t StackPtr,
-                                    size_t StackSize, CFE_ES_TaskPriority_Atom_t Priority, uint32 Flags)
-{
-    int32                    ReturnCode;
-    CFE_ES_AppRecord_t      *AppRecPtr;
-    CFE_ES_AppId_t           ParentAppId;
-    CFE_ES_TaskId_t          SelfTaskId;
-    CFE_ES_TaskStartParams_t Params;
+// CFE_Status_t CFE_ES_CreateChildTask(CFE_ES_TaskId_t *TaskIdPtr, const char *TaskName,
+//                                     CFE_ES_ChildTaskMainFuncPtr_t FunctionPtr, CFE_ES_StackPointer_t StackPtr,
+//                                     size_t StackSize, CFE_ES_TaskPriority_Atom_t Priority, uint32 Flags)
+// {
+//     int32                    ReturnCode;
+//     CFE_ES_AppRecord_t      *AppRecPtr;
+//     CFE_ES_AppId_t           ParentAppId;
+//     CFE_ES_TaskId_t          SelfTaskId;
+//     CFE_ES_TaskStartParams_t Params;
 
-    ParentAppId = CFE_ES_APPID_UNDEFINED;
+//     ParentAppId = CFE_ES_APPID_UNDEFINED;
 
-    memset(&Params, 0, sizeof(Params));
-    Params.Priority  = Priority;
-    Params.StackSize = StackSize;
-    Params.StackPtr  = StackPtr;
+//     memset(&Params, 0, sizeof(Params));
+//     Params.Priority  = Priority;
+//     Params.StackSize = StackSize;
+//     Params.StackPtr  = StackPtr;
 
-    /*
-    ** Validate some of the arguments
-    */
-    if (TaskIdPtr == NULL)
-    {
-        if (TaskName == NULL)
-        {
-            CFE_ES_WriteToSysLog("%s: Task Id and Name Pointer Parameters are NULL.\n", __func__);
-            ReturnCode = CFE_ES_BAD_ARGUMENT;
-        }
-        else
-        {
-            CFE_ES_WriteToSysLog("%s: Task Id Pointer Parameter is NULL for Task '%s'.\n", __func__, TaskName);
-            ReturnCode = CFE_ES_BAD_ARGUMENT;
-        }
-    }
-    else if (TaskName == NULL)
-    {
-        CFE_ES_WriteToSysLog("%s: TaskName Parameter is NULL\n", __func__);
-        ReturnCode = CFE_ES_BAD_ARGUMENT;
-    }
-    else if (FunctionPtr == NULL)
-    {
-        CFE_ES_WriteToSysLog("%s: Function Pointer Parameter is NULL for Task '%s'\n", __func__, TaskName);
-        ReturnCode = CFE_ES_BAD_ARGUMENT;
-    }
-    else
-    {
-        /*
-        ** First, Make sure the Calling Task is a cFE Main task.
-        ** TaskID must be the same as the Parent Task ID.
-        */
-        SelfTaskId = CFE_ES_TaskId_FromOSAL(OS_TaskGetId());
+//     /*
+//     ** Validate some of the arguments
+//     */
+//     if (TaskIdPtr == NULL)
+//     {
+//         if (TaskName == NULL)
+//         {
+//             CFE_ES_WriteToSysLog("%s: Task Id and Name Pointer Parameters are NULL.\n", __func__);
+//             ReturnCode = CFE_ES_BAD_ARGUMENT;
+//         }
+//         else
+//         {
+//             CFE_ES_WriteToSysLog("%s: Task Id Pointer Parameter is NULL for Task '%s'.\n", __func__, TaskName);
+//             ReturnCode = CFE_ES_BAD_ARGUMENT;
+//         }
+//     }
+//     else if (TaskName == NULL)
+//     {
+//         CFE_ES_WriteToSysLog("%s: TaskName Parameter is NULL\n", __func__);
+//         ReturnCode = CFE_ES_BAD_ARGUMENT;
+//     }
+//     else if (FunctionPtr == NULL)
+//     {
+//         CFE_ES_WriteToSysLog("%s: Function Pointer Parameter is NULL for Task '%s'\n", __func__, TaskName);
+//         ReturnCode = CFE_ES_BAD_ARGUMENT;
+//     }
+//     else
+//     {
+//         /*
+//         ** First, Make sure the Calling Task is a cFE Main task.
+//         ** TaskID must be the same as the Parent Task ID.
+//         */
+//         SelfTaskId = CFE_ES_TaskId_FromOSAL(OS_TaskGetId());
 
-        CFE_ES_LockSharedData(__func__, __LINE__);
+//         CFE_ES_LockSharedData(__func__, __LINE__);
 
-        /*
-        ** Get the App Record of the calling Application
-        */
-        AppRecPtr = CFE_ES_GetAppRecordByContext();
-        if (AppRecPtr == NULL)
-        {
-            CFE_ES_SysLogWrite_Unsync("%s: Invalid calling context when creating Task '%s'\n", __func__, TaskName);
-            ReturnCode = CFE_ES_ERR_RESOURCEID_NOT_VALID;
-        }
-        else if (!CFE_RESOURCEID_TEST_EQUAL(SelfTaskId, AppRecPtr->MainTaskId))
-        {
-            CFE_ES_SysLogWrite_Unsync("%s: Error: Cannot call from a Child Task (for Task '%s').\n", __func__,
-                                      TaskName);
-            ReturnCode = CFE_ES_ERR_CHILD_TASK_CREATE;
-        }
-        else
-        {
-            ParentAppId = CFE_ES_AppRecordGetID(AppRecPtr);
-            ReturnCode  = CFE_SUCCESS;
-        } /* end If AppID is valid */
+//         /*
+//         ** Get the App Record of the calling Application
+//         */
+//         AppRecPtr = CFE_ES_GetAppRecordByContext();
+//         if (AppRecPtr == NULL)
+//         {
+//             CFE_ES_SysLogWrite_Unsync("%s: Invalid calling context when creating Task '%s'\n", __func__, TaskName);
+//             ReturnCode = CFE_ES_ERR_RESOURCEID_NOT_VALID;
+//         }
+//         else if (!CFE_RESOURCEID_TEST_EQUAL(SelfTaskId, AppRecPtr->MainTaskId))
+//         {
+//             CFE_ES_SysLogWrite_Unsync("%s: Error: Cannot call from a Child Task (for Task '%s').\n", __func__,
+//                                       TaskName);
+//             ReturnCode = CFE_ES_ERR_CHILD_TASK_CREATE;
+//         }
+//         else
+//         {
+//             ParentAppId = CFE_ES_AppRecordGetID(AppRecPtr);
+//             ReturnCode  = CFE_SUCCESS;
+//         } /* end If AppID is valid */
 
-        CFE_ES_UnlockSharedData(__func__, __LINE__);
+//         CFE_ES_UnlockSharedData(__func__, __LINE__);
 
-    } /* end if parameter checking */
+//     } /* end if parameter checking */
 
-    /*
-    ** Step 2: Create the new task if the parameter validation succeeded
-    */
-    if (ReturnCode == CFE_SUCCESS)
-    {
-        ReturnCode = CFE_ES_StartAppTask(TaskIdPtr, TaskName, FunctionPtr, &Params, ParentAppId);
-    }
+//     /*
+//     ** Step 2: Create the new task if the parameter validation succeeded
+//     */
+//     if (ReturnCode == CFE_SUCCESS)
+//     {
+//         ReturnCode = CFE_ES_StartAppTask(TaskIdPtr, TaskName, FunctionPtr, &Params, ParentAppId);
+//     }
 
-    return ReturnCode;
-}
+//     return ReturnCode;
+// }
 
 /*----------------------------------------------------------------
  *
