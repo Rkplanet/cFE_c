@@ -288,6 +288,18 @@ if (DEFINED ${TGTNAME}_EMBED_FILELIST)
 
 endif (DEFINED ${TGTNAME}_EMBED_FILELIST)
 
+# RUST
+# TODO: Use release versions
+find_library(SB NAMES sb PATHS ../../../../target/debug)
+if(NOT SB)
+  message(FATAL_ERROR "SB not found")
+endif()
+
+find_library(ES NAMES es PATHS ../../../../target/debug)
+if(NOT ES)
+  message(FATAL_ERROR "ES not found")
+endif()
+
 target_link_libraries(core-${TGTNAME}
     ${MISSION_CORE_INTERFACES}
 
@@ -301,6 +313,9 @@ target_link_libraries(core-${TGTNAME}
     # included if they resolve an undefined symbol (normal link logic)
     ${CFE_LINK_NORMAL_LIBS}
     ${OSAL_LINK_LIBS}
+
+    ${SB}
+    ${ES}
 )
 
 # Install the final executable

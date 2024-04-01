@@ -284,8 +284,8 @@ void CFE_ES_StartApplications(uint32 ResetType, const char *StartFilePath)
  *-----------------------------------------------------------------*/
 int32 CFE_ES_ParseFileEntry(const char **TokenList, uint32 NumTokens)
 {
-    const char *  ModuleName;
-    const char *  EntryType;
+    const char   *ModuleName;
+    const char   *EntryType;
     unsigned long ParsedValue;
     union
     {
@@ -495,7 +495,7 @@ int32 CFE_ES_LoadModule(CFE_ResourceId_t ParentResourceId, const char *ModuleNam
  *-----------------------------------------------------------------*/
 int32 CFE_ES_GetTaskFunction(CFE_ES_TaskEntryFuncPtr_t *FuncPtr)
 {
-    CFE_ES_TaskRecord_t *     TaskRecPtr;
+    CFE_ES_TaskRecord_t      *TaskRecPtr;
     CFE_ES_TaskEntryFuncPtr_t EntryFunc;
     int32                     ReturnCode;
     int32                     Timeout;
@@ -575,77 +575,77 @@ void CFE_ES_TaskEntryPoint(void)
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-int32 CFE_ES_StartAppTask(CFE_ES_TaskId_t *TaskIdPtr, const char *TaskName, CFE_ES_TaskEntryFuncPtr_t EntryFunc,
-                          const CFE_ES_TaskStartParams_t *Params, CFE_ES_AppId_t ParentAppId)
-{
-    CFE_ES_TaskRecord_t *TaskRecPtr;
-    osal_id_t            OsalTaskId = OS_OBJECT_ID_UNDEFINED;
-    CFE_ES_TaskId_t      LocalTaskId;
-    int32                OsStatus;
-    int32                ReturnCode;
+// int32 CFE_ES_StartAppTask(CFE_ES_TaskId_t *TaskIdPtr, const char *TaskName, CFE_ES_TaskEntryFuncPtr_t EntryFunc,
+//                           const CFE_ES_TaskStartParams_t *Params, CFE_ES_AppId_t ParentAppId)
+// {
+//     CFE_ES_TaskRecord_t *TaskRecPtr;
+//     osal_id_t            OsalTaskId = OS_OBJECT_ID_UNDEFINED;
+//     CFE_ES_TaskId_t      LocalTaskId;
+//     int32                OsStatus;
+//     int32                ReturnCode;
 
-    /*
-     * Create the primary task for the newly loaded task
-     */
-    OsStatus = OS_TaskCreate(&OsalTaskId,           /* task id */
-                             TaskName,              /* task name matches app name for main task */
-                             CFE_ES_TaskEntryPoint, /* task function pointer */
-                             Params->StackPtr,      /* stack pointer (allocate if NULL) */
-                             Params->StackSize,     /* stack size */
-                             Params->Priority,      /* task priority */
-                             OS_FP_ENABLED);        /* task options */
+//     /*
+//      * Create the primary task for the newly loaded task
+//      */
+//     OsStatus = OS_TaskCreate(&OsalTaskId,           /* task id */
+//                              TaskName,              /* task name matches app name for main task */
+//                              CFE_ES_TaskEntryPoint, /* task function pointer */
+//                              Params->StackPtr,      /* stack pointer (allocate if NULL) */
+//                              Params->StackSize,     /* stack size */
+//                              Params->Priority,      /* task priority */
+//                              OS_FP_ENABLED);        /* task options */
 
-    CFE_ES_LockSharedData(__func__, __LINE__);
+//     CFE_ES_LockSharedData(__func__, __LINE__);
 
-    if (OsStatus == OS_SUCCESS)
-    {
-        /*
-         * As this is a newly-created task, this shouldn't fail.
-         * The entry is not (yet) matching the task ID - it will be
-         * initialized here.
-         */
-        LocalTaskId = CFE_ES_TaskId_FromOSAL(OsalTaskId);
-        TaskRecPtr  = CFE_ES_LocateTaskRecordByID(LocalTaskId);
-        if (CFE_ES_TaskRecordIsUsed(TaskRecPtr))
-        {
-            CFE_ES_SysLogWrite_Unsync("%s: Error: ES_TaskTable slot for ID %lx in use at task creation!\n", __func__,
-                                      OS_ObjectIdToInteger(OsalTaskId));
-        }
+//     if (OsStatus == OS_SUCCESS)
+//     {
+//         /*
+//          * As this is a newly-created task, this shouldn't fail.
+//          * The entry is not (yet) matching the task ID - it will be
+//          * initialized here.
+//          */
+//         LocalTaskId = CFE_ES_TaskId_FromOSAL(OsalTaskId);
+//         TaskRecPtr  = CFE_ES_LocateTaskRecordByID(LocalTaskId);
+//         if (CFE_ES_TaskRecordIsUsed(TaskRecPtr))
+//         {
+//             CFE_ES_SysLogWrite_Unsync("%s: Error: ES_TaskTable slot for ID %lx in use at task creation!\n", __func__,
+//                                       OS_ObjectIdToInteger(OsalTaskId));
+//         }
 
-        /*
-         * Clear any other/stale data that might be in the entry,
-         * and reset all fields to the correct value.
-         */
-        memset(TaskRecPtr, 0, sizeof(*TaskRecPtr));
+//         /*
+//          * Clear any other/stale data that might be in the entry,
+//          * and reset all fields to the correct value.
+//          */
+//         memset(TaskRecPtr, 0, sizeof(*TaskRecPtr));
 
-        TaskRecPtr->AppId       = ParentAppId;
-        TaskRecPtr->EntryFunc   = EntryFunc;
-        TaskRecPtr->StartParams = *Params;
+//         TaskRecPtr->AppId       = ParentAppId;
+//         TaskRecPtr->EntryFunc   = EntryFunc;
+//         TaskRecPtr->StartParams = *Params;
 
-        strncpy(TaskRecPtr->TaskName, TaskName, sizeof(TaskRecPtr->TaskName) - 1);
-        TaskRecPtr->TaskName[sizeof(TaskRecPtr->TaskName) - 1] = 0;
+//         strncpy(TaskRecPtr->TaskName, TaskName, sizeof(TaskRecPtr->TaskName) - 1);
+//         TaskRecPtr->TaskName[sizeof(TaskRecPtr->TaskName) - 1] = 0;
 
-        CFE_ES_TaskRecordSetUsed(TaskRecPtr, CFE_RESOURCEID_UNWRAP(LocalTaskId));
+//         CFE_ES_TaskRecordSetUsed(TaskRecPtr, CFE_RESOURCEID_UNWRAP(LocalTaskId));
 
-        /*
-         * Increment the registered Task count.
-         */
-        CFE_ES_Global.RegisteredTasks++;
-        ReturnCode = CFE_SUCCESS;
-        *TaskIdPtr = CFE_ES_TaskRecordGetID(TaskRecPtr);
-    }
-    else
-    {
-        CFE_ES_SysLogWrite_Unsync("%s: AppCreate Error: TaskCreate %s Failed. EC = %ld!\n", __func__, TaskName,
-                                  (long)OsStatus);
-        ReturnCode = CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
-        *TaskIdPtr = CFE_ES_TASKID_UNDEFINED;
-    }
+//         /*
+//          * Increment the registered Task count.
+//          */
+//         CFE_ES_Global.RegisteredTasks++;
+//         ReturnCode = CFE_SUCCESS;
+//         *TaskIdPtr = CFE_ES_TaskRecordGetID(TaskRecPtr);
+//     }
+//     else
+//     {
+//         CFE_ES_SysLogWrite_Unsync("%s: AppCreate Error: TaskCreate %s Failed. EC = %ld!\n", __func__, TaskName,
+//                                   (long)OsStatus);
+//         ReturnCode = CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
+//         *TaskIdPtr = CFE_ES_TASKID_UNDEFINED;
+//     }
 
-    CFE_ES_UnlockSharedData(__func__, __LINE__);
+//     CFE_ES_UnlockSharedData(__func__, __LINE__);
 
-    return ReturnCode;
-}
+//     return ReturnCode;
+// }
 
 /*----------------------------------------------------------------
  *
@@ -766,6 +766,7 @@ int32 CFE_ES_AppCreate(CFE_ES_AppId_t *ApplicationIdPtr, const char *AppName, co
      */
     if (Status == CFE_SUCCESS)
     {
+        printf("Starting app name %s\n", AppName);
         Status =
             CFE_ES_StartAppTask(&AppRecPtr->MainTaskId, /* Task ID (output) stored in App Record as main task */
                                 AppName,                /* Main Task name matches app name */
@@ -773,6 +774,7 @@ int32 CFE_ES_AppCreate(CFE_ES_AppId_t *ApplicationIdPtr, const char *AppName, co
                                     AppRecPtr->LoadStatus.InitSymbolAddress, /* Init Symbol is main task entry point */
                                 &AppRecPtr->StartParams.MainTaskInfo,        /* Main task parameters */
                                 CFE_ES_APPID_C(PendingResourceId));          /* Parent App ID */
+        printf("Finished starting app name %s\n", AppName);
     }
 
     /*
@@ -819,7 +821,7 @@ int32 CFE_ES_AppCreate(CFE_ES_AppId_t *ApplicationIdPtr, const char *AppName, co
 int32 CFE_ES_LoadLibrary(CFE_ES_LibId_t *LibraryIdPtr, const char *LibName, const CFE_ES_ModuleLoadParams_t *Params)
 {
     CFE_ES_LibraryEntryFuncPtr_t FunctionPointer;
-    CFE_ES_LibRecord_t *         LibSlotPtr;
+    CFE_ES_LibRecord_t          *LibSlotPtr;
     int32                        Status;
     CFE_ResourceId_t             PendingResourceId;
 
@@ -974,7 +976,7 @@ bool CFE_ES_RunAppTableScan(uint32 ElapsedTime, void *Arg)
 {
     CFE_ES_AppTableScanState_t *State = (CFE_ES_AppTableScanState_t *)Arg;
     uint32                      i;
-    CFE_ES_AppRecord_t *        AppPtr;
+    CFE_ES_AppRecord_t         *AppPtr;
     CFE_ES_AppId_t              AppTimeoutList[CFE_PLATFORM_ES_MAX_APPLICATIONS];
     uint32                      NumAppTimeouts;
 
@@ -1092,14 +1094,14 @@ bool CFE_ES_RunAppTableScan(uint32 ElapsedTime, void *Arg)
  *-----------------------------------------------------------------*/
 void CFE_ES_ProcessControlRequest(CFE_ES_AppId_t AppId)
 {
-    CFE_ES_AppRecord_t *     AppRecPtr;
+    CFE_ES_AppRecord_t      *AppRecPtr;
     uint32                   PendingControlReq;
     CFE_ES_AppStartParams_t  RestartParams;
     char                     OrigAppName[OS_MAX_API_NAME];
     CFE_Status_t             CleanupStatus;
     CFE_Status_t             StartupStatus;
     CFE_ES_AppId_t           NewAppId;
-    const char *             ReqName;
+    const char              *ReqName;
     char                     MessageDetail[48];
     uint16                   EventID;
     CFE_EVS_EventType_Enum_t EventType;
@@ -1325,8 +1327,8 @@ int32 CFE_ES_CleanUpApp(CFE_ES_AppId_t AppId)
     osal_id_t               ModuleId;
     uint32                  NumTasks;
     uint32                  NumPools;
-    CFE_ES_AppRecord_t *    AppRecPtr;
-    CFE_ES_TaskRecord_t *   TaskRecPtr;
+    CFE_ES_AppRecord_t     *AppRecPtr;
+    CFE_ES_TaskRecord_t    *TaskRecPtr;
     CFE_ES_MemPoolRecord_t *MemPoolRecPtr;
 
     NumTasks   = 0;

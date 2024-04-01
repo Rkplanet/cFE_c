@@ -780,35 +780,35 @@ CFE_Status_t CFE_ES_GetTaskIDByName(CFE_ES_TaskId_t *TaskIdPtr, const char *Task
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-CFE_Status_t CFE_ES_GetAppID(CFE_ES_AppId_t *AppIdPtr)
-{
-    CFE_ES_AppRecord_t *AppRecPtr;
-    int32               Result;
+// CFE_Status_t CFE_ES_GetAppID(CFE_ES_AppId_t *AppIdPtr)
+// {
+//     CFE_ES_AppRecord_t *AppRecPtr;
+//     int32               Result;
 
-    if (AppIdPtr == NULL)
-    {
-        return CFE_ES_BAD_ARGUMENT;
-    }
+//     if (AppIdPtr == NULL)
+//     {
+//         return CFE_ES_BAD_ARGUMENT;
+//     }
 
-    CFE_ES_LockSharedData(__func__, __LINE__);
+//     CFE_ES_LockSharedData(__func__, __LINE__);
 
-    AppRecPtr = CFE_ES_GetAppRecordByContext();
+//     AppRecPtr = CFE_ES_GetAppRecordByContext();
 
-    if (AppRecPtr != NULL)
-    {
-        *AppIdPtr = CFE_ES_AppRecordGetID(AppRecPtr);
-        Result    = CFE_SUCCESS;
-    }
-    else
-    {
-        *AppIdPtr = CFE_ES_APPID_UNDEFINED;
-        Result    = CFE_ES_ERR_RESOURCEID_NOT_VALID;
-    }
+//     if (AppRecPtr != NULL)
+//     {
+//         *AppIdPtr = CFE_ES_AppRecordGetID(AppRecPtr);
+//         Result    = CFE_SUCCESS;
+//     }
+//     else
+//     {
+//         *AppIdPtr = CFE_ES_APPID_UNDEFINED;
+//         Result    = CFE_ES_ERR_RESOURCEID_NOT_VALID;
+//     }
 
-    CFE_ES_UnlockSharedData(__func__, __LINE__);
+//     CFE_ES_UnlockSharedData(__func__, __LINE__);
 
-    return Result;
-}
+//     return Result;
+// }
 
 /*----------------------------------------------------------------
  *
@@ -816,31 +816,31 @@ CFE_Status_t CFE_ES_GetAppID(CFE_ES_AppId_t *AppIdPtr)
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-CFE_Status_t CFE_ES_GetTaskID(CFE_ES_TaskId_t *TaskIdPtr)
-{
-    int32                Result;
-    CFE_ES_TaskRecord_t *TaskRecPtr;
+// CFE_Status_t CFE_ES_GetTaskID(CFE_ES_TaskId_t *TaskIdPtr)
+// {
+//     int32                Result;
+//     CFE_ES_TaskRecord_t *TaskRecPtr;
 
-    if (TaskIdPtr == NULL)
-    {
-        return CFE_ES_BAD_ARGUMENT;
-    }
+//     if (TaskIdPtr == NULL)
+//     {
+//         return CFE_ES_BAD_ARGUMENT;
+//     }
 
-    CFE_ES_LockSharedData(__func__, __LINE__);
-    TaskRecPtr = CFE_ES_GetTaskRecordByContext();
-    if (TaskRecPtr == NULL)
-    {
-        *TaskIdPtr = CFE_ES_TASKID_UNDEFINED;
-        Result     = CFE_ES_ERR_RESOURCEID_NOT_VALID;
-    }
-    else
-    {
-        *TaskIdPtr = CFE_ES_TaskRecordGetID(TaskRecPtr);
-        Result     = CFE_SUCCESS;
-    }
-    CFE_ES_UnlockSharedData(__func__, __LINE__);
-    return Result;
-}
+//     CFE_ES_LockSharedData(__func__, __LINE__);
+//     TaskRecPtr = CFE_ES_GetTaskRecordByContext();
+//     if (TaskRecPtr == NULL)
+//     {
+//         *TaskIdPtr = CFE_ES_TASKID_UNDEFINED;
+//         Result     = CFE_ES_ERR_RESOURCEID_NOT_VALID;
+//     }
+//     else
+//     {
+//         *TaskIdPtr = CFE_ES_TaskRecordGetID(TaskRecPtr);
+//         Result     = CFE_SUCCESS;
+//     }
+//     CFE_ES_UnlockSharedData(__func__, __LINE__);
+//     return Result;
+// }
 
 /*----------------------------------------------------------------
  *
@@ -985,7 +985,7 @@ CFE_Status_t CFE_ES_GetTaskName(char *TaskName, CFE_ES_TaskId_t TaskId, size_t B
  *-----------------------------------------------------------------*/
 CFE_Status_t CFE_ES_GetAppInfo(CFE_ES_AppInfo_t *AppInfo, CFE_ES_AppId_t AppId)
 {
-    CFE_ES_AppRecord_t * AppRecPtr;
+    CFE_ES_AppRecord_t  *AppRecPtr;
     CFE_ES_TaskRecord_t *TaskRecPtr;
     int32                Status;
     osal_id_t            ModuleId;
@@ -1174,7 +1174,7 @@ int32 CFE_ES_GetModuleInfo(CFE_ES_AppInfo_t *ModuleInfo, CFE_ResourceId_t Resour
 CFE_Status_t CFE_ES_GetTaskInfo(CFE_ES_TaskInfo_t *TaskInfo, CFE_ES_TaskId_t TaskId)
 {
     CFE_ES_TaskRecord_t *TaskRecPtr;
-    CFE_ES_AppRecord_t * AppRecPtr;
+    CFE_ES_AppRecord_t  *AppRecPtr;
     int32                Status;
 
     if (TaskInfo == NULL)
@@ -1249,7 +1249,7 @@ CFE_Status_t CFE_ES_CreateChildTask(CFE_ES_TaskId_t *TaskIdPtr, const char *Task
                                     size_t StackSize, CFE_ES_TaskPriority_Atom_t Priority, uint32 Flags)
 {
     int32                    ReturnCode;
-    CFE_ES_AppRecord_t *     AppRecPtr;
+    CFE_ES_AppRecord_t      *AppRecPtr;
     CFE_ES_AppId_t           ParentAppId;
     CFE_ES_TaskId_t          SelfTaskId;
     CFE_ES_TaskStartParams_t Params;
@@ -1372,7 +1372,7 @@ void CFE_ES_IncrementTaskCounter(void)
 CFE_Status_t CFE_ES_DeleteChildTask(CFE_ES_TaskId_t TaskId)
 {
     CFE_ES_TaskRecord_t *TaskRecPtr;
-    CFE_ES_AppRecord_t * AppRecPtr;
+    CFE_ES_AppRecord_t  *AppRecPtr;
     uint32               i;
     bool                 TaskIsMain;
     int32                ReturnCode = CFE_SUCCESS;
@@ -1483,7 +1483,7 @@ CFE_Status_t CFE_ES_DeleteChildTask(CFE_ES_TaskId_t TaskId)
  *-----------------------------------------------------------------*/
 void CFE_ES_ExitChildTask(void)
 {
-    CFE_ES_AppRecord_t * AppRecPtr;
+    CFE_ES_AppRecord_t  *AppRecPtr;
     CFE_ES_TaskRecord_t *TaskRecPtr;
 
     CFE_ES_LockSharedData(__func__, __LINE__);

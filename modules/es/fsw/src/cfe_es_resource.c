@@ -307,7 +307,7 @@ CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void)
  *-----------------------------------------------------------------*/
 CFE_ES_AppRecord_t *CFE_ES_GetAppRecordByContext(void)
 {
-    CFE_ES_AppRecord_t * AppRecPtr;
+    CFE_ES_AppRecord_t  *AppRecPtr;
     CFE_ES_TaskRecord_t *TaskRecPtr;
 
     /*
@@ -364,17 +364,17 @@ bool CFE_ES_CheckCounterIdSlotUsed(CFE_ResourceId_t CheckId)
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-bool CFE_ES_CheckAppIdSlotUsed(CFE_ResourceId_t CheckId)
-{
-    CFE_ES_AppRecord_t *AppRecPtr;
-    /*
-     * Note - The pointer here should never be NULL because the ID should always be
-     * within the expected range, but if it ever is NULL, this should return true
-     * such that the caller will _not_ attempt to use the record.
-     */
-    AppRecPtr = CFE_ES_LocateAppRecordByID(CFE_ES_APPID_C(CheckId));
-    return (AppRecPtr == NULL || CFE_ES_AppRecordIsUsed(AppRecPtr));
-}
+// bool CFE_ES_CheckAppIdSlotUsed(CFE_ResourceId_t CheckId)
+// {
+//     CFE_ES_AppRecord_t *AppRecPtr;
+//     /*
+//      * Note - The pointer here should never be NULL because the ID should always be
+//      * within the expected range, but if it ever is NULL, this should return true
+//      * such that the caller will _not_ attempt to use the record.
+//      */
+//     AppRecPtr = CFE_ES_LocateAppRecordByID(CFE_ES_APPID_C(CheckId));
+//     return (AppRecPtr == NULL || CFE_ES_AppRecordIsUsed(AppRecPtr));
+// }
 
 /*----------------------------------------------------------------
  *
