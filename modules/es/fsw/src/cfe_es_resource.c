@@ -274,30 +274,30 @@ CFE_ES_GenCounterRecord_t *CFE_ES_LocateCounterRecordByID(CFE_ES_CounterId_t Cou
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void)
-{
-    CFE_ES_TaskRecord_t *TaskRecPtr;
-    CFE_ES_TaskId_t      TaskID;
+// CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void)
+// {
+//     CFE_ES_TaskRecord_t *TaskRecPtr;
+//     CFE_ES_TaskId_t      TaskID;
 
-    /*
-    ** Use the OS task ID to get the ES task record
-    */
-    TaskID     = CFE_ES_TaskId_FromOSAL(OS_TaskGetId());
-    TaskRecPtr = CFE_ES_LocateTaskRecordByID(TaskID);
+//     /*
+//     ** Use the OS task ID to get the ES task record
+//     */
+//     TaskID     = CFE_ES_TaskId_FromOSAL(OS_TaskGetId());
+//     TaskRecPtr = CFE_ES_LocateTaskRecordByID(TaskID);
 
-    /*
-     * Confirm that the entry is actually a match (this requires/assumes
-     * the global data is locked).
-     *
-     * If not a match, return NULL.
-     */
-    if (!CFE_ES_TaskRecordIsMatch(TaskRecPtr, TaskID))
-    {
-        TaskRecPtr = NULL;
-    }
+//     /*
+//      * Confirm that the entry is actually a match (this requires/assumes
+//      * the global data is locked).
+//      *
+//      * If not a match, return NULL.
+//      */
+//     if (!CFE_ES_TaskRecordIsMatch(TaskRecPtr, TaskID))
+//     {
+//         TaskRecPtr = NULL;
+//     }
 
-    return TaskRecPtr;
-}
+//     return TaskRecPtr;
+// }
 
 /*----------------------------------------------------------------
  *
@@ -305,40 +305,40 @@ CFE_ES_TaskRecord_t *CFE_ES_GetTaskRecordByContext(void)
  * See description in header file for argument/return detail
  *
  *-----------------------------------------------------------------*/
-CFE_ES_AppRecord_t *CFE_ES_GetAppRecordByContext(void)
-{
-    CFE_ES_AppRecord_t  *AppRecPtr;
-    CFE_ES_TaskRecord_t *TaskRecPtr;
+// CFE_ES_AppRecord_t *CFE_ES_GetAppRecordByContext(void)
+// {
+//     CFE_ES_AppRecord_t  *AppRecPtr;
+//     CFE_ES_TaskRecord_t *TaskRecPtr;
 
-    /*
-    ** Step 1: Get the task record
-    */
-    TaskRecPtr = CFE_ES_GetTaskRecordByContext();
-    if (TaskRecPtr != NULL)
-    {
-        /*
-        ** Step 2: get the Application ID for the current task
-        */
-        AppRecPtr = CFE_ES_LocateAppRecordByID(TaskRecPtr->AppId);
+//     /*
+//     ** Step 1: Get the task record
+//     */
+//     TaskRecPtr = CFE_ES_GetTaskRecordByContext();
+//     if (TaskRecPtr != NULL)
+//     {
+//         /*
+//         ** Step 2: get the Application ID for the current task
+//         */
+//         AppRecPtr = CFE_ES_LocateAppRecordByID(TaskRecPtr->AppId);
 
-        /*
-         * Confirm that the entry is actually a match (this requires/assumes
-         * the global data is locked).
-         *
-         * If not a match, return NULL.
-         */
-        if (!CFE_ES_AppRecordIsMatch(AppRecPtr, TaskRecPtr->AppId))
-        {
-            AppRecPtr = NULL;
-        }
-    }
-    else
-    {
-        AppRecPtr = NULL;
-    }
+//         /*
+//          * Confirm that the entry is actually a match (this requires/assumes
+//          * the global data is locked).
+//          *
+//          * If not a match, return NULL.
+//          */
+//         if (!CFE_ES_AppRecordIsMatch(AppRecPtr, TaskRecPtr->AppId))
+//         {
+//             AppRecPtr = NULL;
+//         }
+//     }
+//     else
+//     {
+//         AppRecPtr = NULL;
+//     }
 
-    return AppRecPtr;
-}
+//     return AppRecPtr;
+// }
 
 /*----------------------------------------------------------------
  *

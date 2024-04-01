@@ -37,10 +37,14 @@
 #include "common_types.h"
 #include "cfe_es_msg.h"
 #include "cfe_es_api_typedefs.h"
-
 #include "cfe_es_erlog_typedef.h"
 #include "cfe_es_resetdata_typedef.h"
 #include "cfe_es_cds.h"
+
+// Rich TODO: Added for bindgen
+#include "cfe_sb_extern_typedefs.h"
+#include "cfe_es_mempool.h"
+#include "cfe_es_perf.h"
 
 #include <signal.h> /* for sig_atomic_t */
 
